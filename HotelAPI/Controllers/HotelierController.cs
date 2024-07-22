@@ -1,4 +1,5 @@
 ﻿using HotelAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -120,6 +121,27 @@ namespace HotelAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
+        [Authorize]
+        [HttpGet("idhoteler")]
+        public IActionResult idUser(string id)
+        {
+            QLHOTELContext context = new QLHOTELContext();
+            try
+            {
+                Hotelier user = context.Hoteliers.FirstOrDefault(u => u.IdHotelier == id);
+                if (user == null)
+                    return BadRequest(new { message = "không tìm thấy hotelier" });
+                return Ok(new
+                {
+                    Name = user.NameHotelier,
+                    phone = user.PhoneNumber,
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
             }
         }
     }
