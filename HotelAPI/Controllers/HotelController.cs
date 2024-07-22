@@ -165,7 +165,7 @@ namespace HotelAPI.Controllers
                 _context.Hotels.Add(hotel);
                 _context.SaveChanges();
 
-                return Ok(new { message = "Hotel added successfully." });
+                return Ok(new { message = "Hotel added successfully.", idHotel = hotel.IdHotel });
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using HotelAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelAPI.Controllers
 {
@@ -8,18 +9,59 @@ namespace HotelAPI.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        [HttpGet("dsAllService")]
-        public IActionResult dsAllService()
+        [HttpGet("services/{idHotel}")]
+        public IActionResult GetHotelServices(string idHotel)
         {
+            QLHOTELContext _context = new QLHOTELContext();
             try
             {
-                QLHOTELContext context = new QLHOTELContext();
-                List<CService> ds = context.Services.Select(h => CService.chuyendoi(h)).ToList();
-                return Ok(ds);
+                var services = _context.Hotelservices
+                    .Where(hs => hs.IdHotel == idHotel)
+                    .Select(hs => new
+                    {
+                        hs.IdServiceNavigation.IdService,
+                        hs.IdServiceNavigation.NameService
+                    })
+                    .ToList();
+
+                if (services == null || services.Count == 0)
+                {
+                    return NotFound(new { message = "Không có dịch vụ nào cho khách sạn này." });
+                }
+
+                return Ok(services);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
+        [HttpPost("addHotelService")]
+        public IActionResult AddHotelService([FromBody] HotelServiceDto hotelServiceDto)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                if (hotelServiceDto == null || string.IsNullOrEmpty(hotelServiceDto.IdService) || string.IsNullOrEmpty(hotelServiceDto.IdHotel))
+                {
+                    return BadRequest(new { message = "Dữ liệu dịch vụ khách sạn không hợp lệ." });
+                }
+
+                Hotelservice hotelService = new Hotelservice
+                {
+                    IdHotelServer = Guid.NewGuid().ToString(),
+                    IdService = hotelServiceDto.IdService,
+                    IdHotel = hotelServiceDto.IdHotel
+                };
+
+                _context.Hotelservices.Add(hotelService);
+                _context.SaveChanges();
+
+                return Ok(new { message = "Dịch vụ đã được thêm thành công cho khách sạn." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
         [HttpPost("addService")]
@@ -79,6 +121,18 @@ namespace HotelAPI.Controllers
                 return Ok(new { message = "Xóa dịch vụ  thành công" });
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+        [HttpGet("dsServicer")]
+        public IActionResult listService()
+        {
+            QLHOTELContext context = new QLHOTELContext();
+            try
+            {
+                List<CService> services = context.Services.Select(h => CService.chuyendoi(h)).ToList();
+                return Ok(services);
+            }catch (Exception ex) { 
+                return BadRequest(ex); 
+            }
         }
     }
 }
