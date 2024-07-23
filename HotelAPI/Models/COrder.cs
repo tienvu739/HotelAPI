@@ -10,5 +10,35 @@
         public string? IdDiscount { get; set; }
         public string? IdRoom { get; set; } 
 
+        public static COrder chuyendoi(Order x)
+        {
+            if (x == null) return null;
+            return new COrder
+            {
+                DateCreated = x.DateCreated,
+                CheckInDate = x.CheckInDate,
+                CheckOutDate = x.CheckOutDate,
+                Price = x.Price,
+                IdUser = x.IdUser,
+                IdDiscount = x.IdDiscount,
+                IdRoom = x.IdRoom,
+
+            };
+        }
+        public static Order chuyendoi(COrder x)
+        {
+            if (x == null) return null;
+            return new Order
+            {
+                DateCreated = x.DateCreated,
+                CheckInDate = x.CheckInDate,
+                CheckOutDate = x.CheckOutDate,
+                Price = x.Price,
+                IdUser = x.IdUser,
+                IdDiscount = x.IdDiscount,
+                IdRoom = x.IdRoom,
+
+            };
+        }
     }
 }

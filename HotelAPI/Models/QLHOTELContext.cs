@@ -29,6 +29,7 @@ namespace HotelAPI.Models
         public virtual DbSet<Room> Rooms { get; set; } = null!;
         public virtual DbSet<Service> Services { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Admin> Admins { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -41,6 +42,25 @@ namespace HotelAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.HasKey(e => e.IdAdmin)
+                    .HasName("PK__ADMIN__4C3F97F498FF12A8");
+
+                entity.ToTable("ADMIN");
+
+                entity.Property(e => e.IdAdmin).HasMaxLength(256);
+
+                entity.Property(e => e.Account).HasMaxLength(256);
+
+                entity.Property(e => e.Password).HasMaxLength(256);
+
+                entity.Property(e => e.Name).HasMaxLength(256);
+
+                entity.Property(e => e.Address).HasMaxLength(256);
+
+                entity.Property(e => e.Role).HasMaxLength(256);
+            });
             modelBuilder.Entity<Convenient>(entity =>
             {
                 entity.HasKey(e => e.IdConvenient)

@@ -289,5 +289,63 @@ namespace HotelAPI.Controllers
             }
         }
 
+        [HttpGet("QLKS")]
+        public IActionResult allKS()
+        {
+            QLHOTELContext context = new QLHOTELContext();
+            try
+            {
+                var hotel = context.Hotels.Select(i => new
+                {
+                    IdHotel = i.IdHotel,
+                    NameHotel = i.NameHotel,
+                    AddressHotel = i.AddressHotel,
+                    DescribeHotel = i.DescribeHotel,
+                    PolicyHotel = i.PolicyHotel,
+                    TypeHotel = i.TypeHotel,
+                    StatusHotel = i.StatusHotel,
+                    IdHotelier = i.IdHotelier,
+                }).ToList();
+                return Ok(hotel);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("ApproveHotel")]
+        public IActionResult ApproveHotel(string idHotel)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            if (string.IsNullOrEmpty(idHotel))
+            {
+                return BadRequest(new { message = "IdHotel không hợp lệ." });
+            }
+
+            try
+            {
+                // Tìm khách sạn theo IdHotel
+                var hotel = _context.Hotels.FirstOrDefault(h => h.IdHotel == idHotel);
+                if (hotel == null)
+                {
+                    return NotFound(new { message = "Khách sạn không tồn tại." });
+                }
+
+                // Kiểm tra trạng thái hiện tại
+                if (hotel.StatusHotel == true)
+                {
+                    return BadRequest(new { message = "Khách sạn đã được duyệt." });
+                }
+
+                // Cập nhật trạng thái khách sạn
+                hotel.StatusHotel = true;
+                _context.SaveChanges();
+
+                return Ok(new { message = "Khách sạn đã được duyệt thành công." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
     }
 }

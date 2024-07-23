@@ -159,5 +159,49 @@ namespace HotelAPI.Controllers
                 return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
+        [HttpGet("dsOrder")]
+        public IActionResult dsOrder()
+        {
+            try
+            {
+                QLHOTELContext context = new QLHOTELContext();
+                var orders = context.Orders.Select(h => new
+                {
+                    h.IdOrder,
+                    h.DateCreated,
+                    h.CheckInDate,
+                    h.CheckOutDate,
+                    h.Price,
+                    h.IdUser,
+                    h.IdDiscount,
+                    h.IdRoom,
+
+                });
+                return Ok(orders);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("delete")]
+        public IActionResult delete(string id)
+        {
+            try
+            {
+                QLHOTELContext context = new QLHOTELContext();
+                var order = context.Orders.FirstOrDefault(o => o.IdOrder == id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Đơn hàng không tồn tại." });
+                }
+                context.Orders.Remove(order);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

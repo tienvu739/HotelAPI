@@ -54,7 +54,7 @@ namespace HotelAPI.Controllers
                 {
                     return NotFound(new { message = "Khuyến mãi không tồn tại" });
                 }
-                a.IdDiscount = x.IdDiscount;
+
                 a.NameDiscount = x.NameDiscount;
                 a.DescribeDiscount = x.DescribeDiscount;
                 a.DiscountAmount = x.DiscountAmount;
