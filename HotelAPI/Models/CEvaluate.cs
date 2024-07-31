@@ -1,4 +1,7 @@
-﻿namespace HotelAPI.Models
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace HotelAPI.Models
 {
     public class CEvaluate
     {
@@ -37,5 +40,6 @@
                 IdUser = x.IdUser
             };
         }
+       
     }
 }

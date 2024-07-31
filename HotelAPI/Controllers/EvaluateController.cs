@@ -160,6 +160,38 @@ namespace HotelAPI.Controllers
                 return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
+        [HttpGet("getEvaluatesByHotel")]
+        public IActionResult GetEvaluatesByHotel(string idhotel)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                // Tìm các đánh giá theo IdHotel
+                var evaluates = _context.Evaluates
+                    .Where(e => e.IdHotel == idhotel)
+                    .Select(e => new
+                    {
+                        e.IdEvaluate,
+                        e.DateCreated,
+                        e.Title,
+                        e.DescribeEvaluate,
+                        e.Point,
+                        e.IdHotel,
+                        e.IdUser
+                    })
+                    .ToList();
 
+                if (evaluates == null || evaluates.Count == 0)
+                {
+                    return NotFound(new { message = "Không có đánh giá nào cho khách sạn này." });
+                }
+
+                return Ok(evaluates);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
     }
 }
