@@ -310,7 +310,7 @@ namespace HotelAPI.Controllers
             QLHOTELContext context = new QLHOTELContext();
             try
             {
-                var hotel = context.Hotels.Select(i => new
+                var hotel = context.Hotels.Select(i => new CHotel
                 {
                     IdHotel = i.IdHotel,
                     NameHotel = i.NameHotel,
