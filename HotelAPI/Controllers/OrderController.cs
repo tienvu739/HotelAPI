@@ -135,6 +135,7 @@ namespace HotelAPI.Controllers
                     .Where(o => o.IdUser == idUser)
                     .Select(o => new COrderDetail
                     {
+                        id = o.IdOrder,
                         DateCreated = o.DateCreated,
                         CheckInDate = o.CheckInDate,
                         CheckOutDate = o.CheckOutDate,

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace HotelAPI.Controllers
@@ -129,6 +130,56 @@ namespace HotelAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
+        [HttpPut("toggleStatus")]
+        public IActionResult ToggleStatus(string idRoom)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                var room = _context.Rooms.FirstOrDefault(r => r.IdRoom == idRoom);
+                if (room == null)
+                {
+                    return NotFound(new { message = "Room not found" });
+                }
+
+                room.StatusRoom = !room.StatusRoom;
+                _context.SaveChanges();
+
+                return Ok(new { message = "Room status updated successfully", status = room.StatusRoom });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "An error occurred: " + ex.Message });
+            }
+        }
+        [HttpGet("getHotelNameByRoomId")]
+        public IActionResult GetHotelNameByRoomId(string idRoom)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                // Tìm phòng dựa trên idRoom
+                var room = _context.Rooms.FirstOrDefault(r => r.IdRoom == idRoom);
+                if (room == null)
+                {
+                    return NotFound(new { message = "Room not found" });
+                }
+
+                // Tìm khách sạn tương ứng với phòng
+                var hotel = _context.Hotels.FirstOrDefault(h => h.IdHotel == room.IdHotel);
+                if (hotel == null)
+                {
+                    return NotFound(new { message = "Hotel not found for this room" });
+                }
+
+                // Trả về tên khách sạn
+                return Ok(new { hotelName = hotel.NameHotel });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "An error occurred: " + ex.Message });
             }
         }
     }

@@ -2,6 +2,7 @@
 {
     public class COrderDetail
     {
+        public string? id { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }
