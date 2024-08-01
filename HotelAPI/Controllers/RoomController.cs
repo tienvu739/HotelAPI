@@ -176,10 +176,76 @@ namespace HotelAPI.Controllers
 
                 // Trả về tên khách sạn
                 return Ok(new { hotelName = hotel.NameHotel });
+
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = "An error occurred: " + ex.Message });
+            }
+        }
+        [HttpGet("getAllRooms")]
+        public IActionResult GetAllRooms()
+        {
+            QLHOTELContext _context = new QLHOTELContext();  
+            try
+            {
+                var rooms = _context.Rooms.Select(r => new
+                {
+                    r.IdRoom,
+                    r.NameRoom,
+                    r.AreaRoom,
+                    r.People,
+                    r.PolicyRoom,
+                    r.BedNumber,
+                    r.StatusRoom,
+                    r.TypeRoom,
+                    r.Price,
+                    r.IdHotel,
+                    HotelName = r.IdHotelNavigation.NameHotel, // Assuming you want to include the hotel name
+                    Images = r.Imagerooms.Select(i => new { i.IdImageRoom, i.ImageData }).ToList()
+                }).ToList();
+
+                if (!rooms.Any())
+                {
+                    return NotFound(new { message = "Không có phòng nào." });
+                }
+
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
+        [HttpPut("updateRoom")]
+        public IActionResult UpdateRoom([FromBody] Room updatedRoom)
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                var room = _context.Rooms.FirstOrDefault(r => r.IdRoom == updatedRoom.IdRoom);
+                if (room == null)
+                {
+                    return NotFound(new { message = "Phòng không tồn tại" });
+                }
+
+                // Update room properties
+                room.NameRoom = updatedRoom.NameRoom;
+                room.AreaRoom = updatedRoom.AreaRoom;
+                room.People = updatedRoom.People;
+                room.PolicyRoom = updatedRoom.PolicyRoom;
+                room.BedNumber = updatedRoom.BedNumber;
+                room.StatusRoom = updatedRoom.StatusRoom;
+                room.TypeRoom = updatedRoom.TypeRoom;
+                room.Price = updatedRoom.Price;
+
+                _context.SaveChanges();
+
+                return Ok(new { message = "Cập nhật thông tin phòng thành công", room });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
     }

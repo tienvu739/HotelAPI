@@ -105,6 +105,7 @@ namespace HotelAPI.Controllers
                     .AsEnumerable() // Chuyển sang IEnumerable để thực hiện phía máy khách
                     .Select(o => new COrderDetail
                     {
+                        id = o.IdOrder,
                         DateCreated = o.DateCreated,
                         CheckInDate = o.CheckInDate,
                         CheckOutDate = o.CheckOutDate,
@@ -202,6 +203,55 @@ namespace HotelAPI.Controllers
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("getHotelStatistics")]
+        public IActionResult GetHotelStatistics()
+        {
+            QLHOTELContext _context = new QLHOTELContext();
+            try
+            {
+                var hotelStatistics = _context.Hotels
+                    .Select(h => new
+                    {
+                        HotelId = h.IdHotel,
+                        HotelName = h.NameHotel,
+                        Rooms = h.Rooms.Select(r => new
+                        {
+                            Orders = r.Orders.Select(o => new
+                            {
+                                o.Price,
+                                DateYear = o.DateCreated.Value.Year,
+                                DateMonth = o.DateCreated.Value.Month
+                            })
+                        })
+                    })
+                    .ToList()
+                    .Select(h => new
+                    {
+                        h.HotelId,
+                        h.HotelName,
+                        TotalRevenue = h.Rooms.SelectMany(r => r.Orders).Sum(o => o.Price ?? 0),
+                        TotalOrders = h.Rooms.SelectMany(r => r.Orders).Count(),
+                        MonthlyRevenue = h.Rooms
+                                          .SelectMany(r => r.Orders)
+                                          .GroupBy(o => new { o.DateYear, o.DateMonth })
+                                          .Select(g => new
+                                          {
+                                              Year = g.Key.DateYear,
+                                              Month = g.Key.DateMonth,
+                                              Revenue = g.Sum(o => o.Price ?? 0),
+                                              OrderCount = g.Count()
+                                          })
+                                          .ToList()
+                    })
+                    .ToList();
+
+                return Ok(hotelStatistics);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
     }

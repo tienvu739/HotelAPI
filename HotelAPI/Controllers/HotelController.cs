@@ -181,7 +181,7 @@ namespace HotelAPI.Controllers
             try
             {
                 var hotels = context.Hotels
-                    .Where(u => u.IdHotelier == id)
+                    .Where(u => u.IdHotelier == id && u.StatusHotel == true)
                     .Select(h => new CNameHotel
                     {
                         IdHotel = h.IdHotel,
