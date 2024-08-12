@@ -243,10 +243,10 @@ namespace HotelAPI.Controllers
         [Authorize]
         [HttpGet("searchHotels")]
         public IActionResult SearchHotels(
-         [FromQuery] string? searchTerm = null,
-         [FromQuery] double? minPrice = null,
-         [FromQuery] double? maxPrice = null,
-         [FromQuery] string? roomType = null)
+     [FromQuery] string? searchTerm = null,
+     [FromQuery] double? minPrice = null,
+     [FromQuery] double? maxPrice = null,
+     [FromQuery] string? roomType = null)
         {
             QLHOTELContext _context = new QLHOTELContext();
             try
@@ -255,7 +255,8 @@ namespace HotelAPI.Controllers
 
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
-                    query = query.Where(h => h.NameHotel.Contains(searchTerm) || h.AddressHotel.Contains(searchTerm));
+                    var lowerSearchTerm = searchTerm.ToLower();
+                    query = query.Where(h => h.NameHotel.ToLower().Contains(lowerSearchTerm) || h.AddressHotel.ToLower().Contains(lowerSearchTerm));
                 }
 
                 if (minPrice.HasValue || maxPrice.HasValue || !string.IsNullOrEmpty(roomType))
@@ -296,6 +297,7 @@ namespace HotelAPI.Controllers
                 return BadRequest(new { message = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
+
 
 
         [HttpGet("QLKS")]
