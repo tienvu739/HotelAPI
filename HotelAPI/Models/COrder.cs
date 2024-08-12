@@ -9,6 +9,7 @@
         public string? IdUser { get; set; }
         public string? IdDiscount { get; set; }
         public string? IdRoom { get; set; } 
+        public bool? Stastus { get; set; }
 
         public static COrder chuyendoi(Order x)
         {
@@ -22,6 +23,7 @@
                 IdUser = x.IdUser,
                 IdDiscount = x.IdDiscount,
                 IdRoom = x.IdRoom,
+                Stastus = x.Stastus,
 
             };
         }
@@ -37,6 +39,7 @@
                 IdUser = x.IdUser,
                 IdDiscount = x.IdDiscount,
                 IdRoom = x.IdRoom,
+                Stastus= x.Stastus,
 
             };
         }

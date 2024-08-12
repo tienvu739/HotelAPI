@@ -13,6 +13,7 @@ namespace HotelAPI.Models
         public string? IdUser { get; set; }
         public string? IdDiscount { get; set; }
         public string? IdRoom { get; set; }
+        public bool? Stastus { get; set; }
 
         public virtual Discount? IdDiscountNavigation { get; set; }
         public virtual Room? IdRoomNavigation { get; set; }

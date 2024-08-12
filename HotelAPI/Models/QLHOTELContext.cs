@@ -126,15 +126,15 @@ namespace HotelAPI.Models
 
                 entity.Property(e => e.IdHotel).HasMaxLength(64);
 
-                entity.Property(e => e.AddressHotel).HasMaxLength(256);
+                entity.Property(e => e.AddressHotel);
 
-                entity.Property(e => e.DescribeHotel).HasMaxLength(256);
+                entity.Property(e => e.DescribeHotel);
 
                 entity.Property(e => e.IdHotelier).HasMaxLength(64);
 
                 entity.Property(e => e.NameHotel).HasMaxLength(256);
 
-                entity.Property(e => e.PolicyHotel).HasMaxLength(256);
+                entity.Property(e => e.PolicyHotel);
 
                 entity.Property(e => e.TypeHotel).HasMaxLength(256);
 
@@ -306,7 +306,7 @@ namespace HotelAPI.Models
 
                 entity.Property(e => e.NameRoom).HasMaxLength(256);
 
-                entity.Property(e => e.PolicyRoom).HasMaxLength(256);
+                entity.Property(e => e.PolicyRoom);
 
                 entity.Property(e => e.TypeRoom).HasMaxLength(256);
 

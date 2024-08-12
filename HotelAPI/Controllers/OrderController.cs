@@ -25,7 +25,8 @@ namespace HotelAPI.Controllers
                         Price = o.Price,
                         IdUser = o.IdUser,
                         IdDiscount = o.IdDiscount,
-                        IdRoom = o.IdRoom
+                        IdRoom = o.IdRoom,
+                        Stastus = o.Stastus,
                     })
                     .ToList();
 
@@ -62,7 +63,8 @@ namespace HotelAPI.Controllers
                     Price = orderDto.Price,
                     IdUser = orderDto.IdUser,
                     IdDiscount = orderDto.IdDiscount,
-                    IdRoom = orderDto.IdRoom
+                    IdRoom = orderDto.IdRoom,
+                    Stastus  = orderDto.Stastus,
                 };
 
                 _context.Orders.Add(order);
@@ -113,6 +115,7 @@ namespace HotelAPI.Controllers
                         IdUser = o.IdUser,
                         IdDiscount = o.IdDiscount,
                         IdRoom = o.IdRoom,
+                        Stastus = o.Stastus,
                         HotelName = hotels.FirstOrDefault(h => h.IdHotel == o.IdRoomNavigation.IdHotel)?.NameHotel,
                         RoomName = rooms.FirstOrDefault(r => r.IdRoom == o.IdRoom)?.NameRoom
                     })
@@ -133,7 +136,7 @@ namespace HotelAPI.Controllers
             try
             {
                 var orderDetails = _context.Orders
-                    .Where(o => o.IdUser == idUser)
+                    .Where(o => o.IdUser == idUser && o.Stastus == true)
                     .Select(o => new COrderDetail
                     {
                         id = o.IdOrder,
@@ -196,8 +199,11 @@ namespace HotelAPI.Controllers
                 {
                     return NotFound(new { message = "Đơn hàng không tồn tại." });
                 }
-                context.Orders.Remove(order);
-                context.SaveChanges();
+                if (order.Stastus == true)
+                {
+                    order.Stastus = false;
+                    context.SaveChanges();
+                }    
                 return Ok();
             }
             catch(Exception ex)

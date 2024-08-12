@@ -243,25 +243,19 @@ namespace HotelAPI.Controllers
         [Authorize]
         [HttpGet("searchHotels")]
         public IActionResult SearchHotels(
-        [FromQuery] string? name = null,
-        [FromQuery] string? address = null,
-        [FromQuery] double? minPrice = null,
-        [FromQuery] double? maxPrice = null,
-        [FromQuery] string? roomType = null)
+         [FromQuery] string? searchTerm = null,
+         [FromQuery] double? minPrice = null,
+         [FromQuery] double? maxPrice = null,
+         [FromQuery] string? roomType = null)
         {
             QLHOTELContext _context = new QLHOTELContext();
             try
             {
                 var query = _context.Hotels.AsQueryable();
 
-                if (!string.IsNullOrEmpty(name))
+                if (!string.IsNullOrEmpty(searchTerm))
                 {
-                    query = query.Where(h => h.NameHotel.Contains(name));
-                }
-
-                if (!string.IsNullOrEmpty(address))
-                {
-                    query = query.Where(h => h.AddressHotel.Contains(address));
+                    query = query.Where(h => h.NameHotel.Contains(searchTerm) || h.AddressHotel.Contains(searchTerm));
                 }
 
                 if (minPrice.HasValue || maxPrice.HasValue || !string.IsNullOrEmpty(roomType))

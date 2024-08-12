@@ -10,6 +10,7 @@
         public string? IdUser { get; set; }
         public string? IdDiscount { get; set; }
         public string? IdRoom { get; set; }
+        public bool? Stastus { get; set; }
         public string? HotelName { get; set; }
         public string? RoomName { get; set; }
     }
